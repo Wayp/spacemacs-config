@@ -40,7 +40,6 @@ values."
      (latex :variables latex-enable-folding t) 
      helm
      auto-completion
-     better-defaults
      emacs-lisp
      themes-megapack
      git
@@ -65,7 +64,7 @@ values."
    ;; A list of packages that will not be installed and loaded.
    dotspacemacs-excluded-packages '
    (
-    smartparens 
+    smartparens
     )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -76,7 +75,7 @@ values."
    ;; Spacemacs and never uninstall them. (default is `used-only')
    dotspacemacs-install-packages 'used-only))
 
-(defun dotspacemacs/init ()
+(defun  dotspacemacs/init ()
   "Initialization function.
 This function is called at the very startup of Spacemacs initialization
 before layers configuration.
@@ -306,7 +305,7 @@ values."
    dotspacemacs-whitespace-cleanup nil
    ))
 
-(defun dotspacemacs/user-init ()
+(defun  dotspacemacs/user-init ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
@@ -317,7 +316,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; dependencies for gruvbox theme that need to be loaded first
   (load-file "~/.emacs.d/elpa/dash-20180910.1856/dash.el")
   (load-file "~/.emacs.d/elpa/autothemer-20180920.923/autothemer.el")
+  (require 'ob-python)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (java . t)))
   )
+
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -327,17 +332,29 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; custom key-bindings
+  (global-set-key (kbd "C-s") 'save-buffer)
+  (global-set-key (kbd "C-a") 'mark-whole-buffer)
+  (global-set-key (kbd "C-b") 'helm-previous-page)
+  (global-set-key (kbd "C-f") 'helm-next-page)
+  (spacemacs/set-leader-keys "bc" 'comint-clear-buffer)
+
+  ;; remove annoyances
   (menu-bar-mode 1)
+  (setq org-confirm-babel-evaluate nil)
+
   ;; separate register for system clipboard "+
   (setq x-select-enable-clipboard nil)
 
+  ;; ORG-MODE SETUP
+  ;;;;;;;;;;;;;;;;;
   (setq org-format-latex-options '(:foreground default :background default :scale 1.65
                                                :html-foreground "Black"
                                                :html-background "Transparent"
                                                :html-scale 1.0 :matchers
                                                ("begin" "$1" "$" "$$" "\\(" "\\[")))
   ;; set font and appearance of org-mode
-  (defun set-org-mode-config ()
+  (defun  set-org-mode-config ()
     (interactive)
     (variable-pitch-mode t)
     (setq org-bullets-bullet-list '("■" "◆" "▲" "▶")
@@ -349,7 +366,7 @@ you should place your code here."
     (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
     )
   (add-hook 'org-mode-hook 'set-org-mode-config)
-
+  
   ;; start outline-minor-mode when using AucTeX
   (add-hook 'LaTeX-mode-hook #'outline-minor-mode)
 
@@ -370,7 +387,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (xterm-color unfill smeargle shell-pop orgit mwim multi-term mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor eshell-z eshell-prompt-extras esh-help diff-hl company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete gruvbox-theme-theme zenburn-theme zen-and-art-theme yapfify ws-butler winum white-sand-theme which-key volatile-highlights vi-tilde-fringe uuidgen use-package underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme toc-org tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spaceline spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme restart-emacs request rebecca-theme rainbow-delimiters railscasts-theme pyvenv pytest pyenv-mode py-isort purple-haze-theme professional-theme popwin planet-theme pip-requirements phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el paradox organic-green-theme org-projectile org-present org-pomodoro org-mime org-download org-bullets open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme neotree naquadah-theme mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme madhat2r-theme macrostep lush-theme lorem-ipsum live-py-mode linum-relative link-hint light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio gnuplot gandalf-theme flyspell-correct-helm flycheck-pos-tip flx-ido flatui-theme flatland-theme fill-column-indicator farmhouse-theme fancy-battery eyebrowse expand-region exotica-theme exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu espresso-theme elisp-slime-nav dumb-jump dracula-theme django-theme diminish define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cython-mode cyberpunk-theme column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk apropospriate-theme anti-zenburn-theme anaconda-mode ample-zen-theme ample-theme alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+    (evil-smartparens xterm-color unfill smeargle shell-pop orgit mwim multi-term mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor eshell-z eshell-prompt-extras esh-help diff-hl company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete gruvbox-theme-theme zenburn-theme zen-and-art-theme yapfify ws-butler winum white-sand-theme which-key volatile-highlights vi-tilde-fringe uuidgen use-package underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme toc-org tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spaceline spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme restart-emacs request rebecca-theme rainbow-delimiters railscasts-theme pyvenv pytest pyenv-mode py-isort purple-haze-theme professional-theme popwin planet-theme pip-requirements phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el paradox organic-green-theme org-projectile org-present org-pomodoro org-mime org-download org-bullets open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme neotree naquadah-theme mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme madhat2r-theme macrostep lush-theme lorem-ipsum live-py-mode linum-relative link-hint light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio gnuplot gandalf-theme flyspell-correct-helm flycheck-pos-tip flx-ido flatui-theme flatland-theme fill-column-indicator farmhouse-theme fancy-battery eyebrowse expand-region exotica-theme exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu espresso-theme elisp-slime-nav dumb-jump dracula-theme django-theme diminish define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cython-mode cyberpunk-theme column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk apropospriate-theme anti-zenburn-theme anaconda-mode ample-zen-theme ample-theme alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ace-link ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
