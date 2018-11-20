@@ -353,7 +353,6 @@ you should place your code here."
   ;; ORG-MODE
   ;;;;;;;;;;;;;;;;;
 
-  ;; (setq org-adapt-indentation nil)
   (setq org-format-latex-options '(:foreground default :background default :scale 1.65
                                                :html-foreground "Black"
                                                :html-background "Transparent"
