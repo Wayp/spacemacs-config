@@ -48,7 +48,8 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
-     spell-checking
+     (spell-checking :variables
+                     spell-checking-enable-by-default nil)
      syntax-checking
      version-control
      )
@@ -332,41 +333,76 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  ;; custom key-bindings
+  ;; KEY-BINDINGS
+  ;;;;;;;;;;;;;;;;;;;;;;
   (global-set-key (kbd "C-s") 'save-buffer)
   (global-set-key (kbd "C-a") 'mark-whole-buffer)
   (global-set-key (kbd "C-b") 'helm-previous-page)
   (global-set-key (kbd "C-f") 'helm-next-page)
   (spacemacs/set-leader-keys "bc" 'comint-clear-buffer)
 
-  ;; remove annoyances
+  ;; DEFAULTS
+  ;;;;;;;;;;;;;;
+  (setq-default auto-fill-function 'do-auto-fill)
   (menu-bar-mode 1)
   (setq org-confirm-babel-evaluate nil)
 
   ;; separate register for system clipboard "+
   (setq x-select-enable-clipboard nil)
 
-  ;; ORG-MODE SETUP
+  ;; ORG-MODE
   ;;;;;;;;;;;;;;;;;
+
+  ;; (setq org-adapt-indentation nil)
   (setq org-format-latex-options '(:foreground default :background default :scale 1.65
                                                :html-foreground "Black"
                                                :html-background "Transparent"
                                                :html-scale 1.0 :matchers
                                                ("begin" "$1" "$" "$$" "\\(" "\\[")))
-  ;; set font and appearance of org-mode
+
+  ;; automatic indentation
+  (setq org-startup-indented t)
+
   (defun  set-org-mode-config ()
     (interactive)
     (variable-pitch-mode t)
-    (setq org-bullets-bullet-list '("■" "◆" "▲" "▶")
-          neo-show-hidden-files nil)
     (setq org-agenda-files (list "~/Documents/orgmode"))
     (setq line-spacing 3)
     (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
     )
+
   (add-hook 'org-mode-hook 'set-org-mode-config)
-  
+
+  ;; fonts
+  (let* ((variable-tuple
+          (cond  ((x-list-fonts "DejaVu Sans")     '(:font "DejaVu Sans")) 
+                 ((x-list-fonts "Noto Sans")       '(:font "Noto Sans"))
+                 ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                 (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+         (base-font-color     (face-foreground 'default nil 'default))
+         (headline           `(:inherit default :weight bold)))
+
+  (custom-theme-set-faces
+   'user
+   `(org-level-8 ((t (,@headline ,@variable-tuple))))
+   `(org-level-7 ((t (,@headline ,@variable-tuple))))
+   `(org-level-6 ((t (,@headline ,@variable-tuple))))
+   `(org-level-5 ((t (,@headline ,@variable-tuple))))
+   `(org-level-4 ((t (,@headline ,@variable-tuple))))
+   `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.05))))
+   `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.1))))
+   `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.2))))
+   `(org-document-title ((t (,@headline ,@variable-tuple :height 1.4))))
+   '(variable-pitch ((t (:family "DejaVu Sans" :height 125 :weight normal))))
+   '(fixed-pitch ((t ( :family "DejaVu Sans Mono" :height 180 :slant normal
+                               :weight normal :height 1.0 :width normal)))))
+  )
+
+  ;; LATEX
+  ;;;;;;;;;;;;;;;;
+
   ;; start outline-minor-mode when using AucTeX
   (add-hook 'LaTeX-mode-hook #'outline-minor-mode)
 
@@ -393,5 +429,4 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 16777215)) (:background "#282828" :foreground "#fdf4c1")) (((class color) (min-colors 255)) (:background "#262626" :foreground "#ffffaf"))))
- '(variable-pitch ((t (:family "DejaVu Sans" :height 130)))))
+ '(default ((((class color) (min-colors 16777215)) (:background "#282828" :foreground "#fdf4c1")) (((class color) (min-colors 255)) (:background "#262626" :foreground "#ffffaf")))))
