@@ -324,6 +324,17 @@ before packages are loaded. If you are unsure, you should try in setting them in
    'org-babel-load-languages
    '((python . t)
      (java . t)))
+
+  ;; laptop
+  (when (string= (system-name) "hua-x220")
+      (setq-default dotspacemacs-default-font '("DejaVu Sans Mono"
+                                                :size 14
+                                                :weight normal
+                                                :width normal
+                                                :powerline-scale 1.1))
+    )
+
+  ;; end user-init
   )
 
 
@@ -347,7 +358,7 @@ you should place your code here."
   ;; DEFAULTS
   ;;;;;;;;;;;;;;
   (setq-default auto-fill-function 'do-auto-fill)
-  (menu-bar-mode 1)
+  ;; (menu-bar-mode 1)
   (setq org-confirm-babel-evaluate nil)
   ;; separate register for system clipboard "+
   (setq x-select-enable-clipboard nil)
@@ -417,7 +428,19 @@ you should place your code here."
   (eval-after-load "tex"
     '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular")
     )
+
+  ;; LAPTOP
+  ;;;;;;;;;;;;;;;;;;;;;
+
+  (when (string= (system-name) "hua-x220")
+    (custom-theme-set-faces
+        'user
+        '(variable-pitch ((t (:family "DejaVu Sans" :height 115 :weight normal)))))
+    )
+
+;; end user-config
   )
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
